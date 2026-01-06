@@ -1,0 +1,10 @@
+Soft Deletes:
+It ensures that the data is not lost and can be recovered later in a given time.
+It is required to enhance user experience in cases where they come back to restore their data.
+For example a user can be given the choice to deactive an account instead of permanently deleting before a certain period to allow restoring the account again.
+Historical data should also be maintained to allow future predictions, support legal work. 
+
+Hard Deletes:
+Permanently deletes the data. Can be restored only if a backup is maintained.
+All the data that does not promote to the business logic deserves to be hard deleted like otp codes, session tokens, Caches. 
+Old logs and monitoring data, spam messages, fake accounts needs to be hard deleted.  
