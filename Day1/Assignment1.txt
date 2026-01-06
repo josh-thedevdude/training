@@ -1,0 +1,5 @@
+BOnline Banking System rely on relational databases due to their need for strong data consistency, transactions and structured data.
+
+Social Media Platforms use NoSQL databases allowing them to handle massive, rapidly changing data and scale. 
+
+Real Time applications like games, chatapps uses in-memory databases for quick read and writes and uses a persistent store later to maintain the data.
