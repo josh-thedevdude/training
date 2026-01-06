@@ -1,0 +1,11 @@
+Query:
+
+SELECT * FROM bookings
+WHERE doctor_id = ?
+AND appointment_date >= ?
+AND appointment_date <= ?;
+
+Composite Index:
+(doctor_id, appointment_date)
+The default indexing method is B-Tree which respects the order of the indexed attributes which is Left to Right.
+In the above query "doctor_id" being first should be indexed first then appointment_date.
