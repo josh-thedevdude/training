@@ -1,0 +1,38 @@
+A relational database should follow the Atomicity Consistency Isolation Durability properties. Normalization enforces the database to achieve this and remove redundancy of data.
+
+1NF deals with atomicity ensuring each column has atomic values. 
+2NF deals with partial dependency where the attributes depending only on a part of the P.K. is extracted to the appropriate table. (Table must already be in 1NF.)
+3NF deals with transitivity in which if an attribute 1 depends on attribute 2 and attribute 2 depends on P.K. then the dependent attribute is altogether moved to a new table. 
+
+Given data:
+order_id    customer_name    products
+101            Rahul                    Laptop, Mouse.
+
+1NF normalized data: (products attribute is not atomic)
+
+Orders Table: P.K - (order_id, product_id)
+order_id    customer_name    product_id
+101            Rahul                    201
+101            Rahul                    202
+
+Products Table:
+id        name
+201     Laptop
+202     Mouse
+
+
+2NF normalized data: (customer_name is only dependent on part of P.K.)
+
+Customers Table:
+id        name
+301     Rahul
+
+Products Table:
+id        name
+201     Laptop
+202     Mouse
+
+Orders Table: P.K. - (order_id, customer_id, product_id)
+order_id    customer_id    product_id
+101           301                  201
+101           301                  202
