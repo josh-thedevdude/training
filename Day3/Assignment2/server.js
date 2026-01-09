@@ -20,7 +20,7 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
     console.error(err.stack)
-    res.status(500).json({ error: err.message.error });
+    res.status(err.statusCode).json({ error: err.message });
 });
 
 app.listen(PORT, () => {
