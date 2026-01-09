@@ -1,3 +1,4 @@
+import { UserError } from "../errorhandling.js";
 import { getUsers, saveUsers } from "../models/store.js";
 import { v4 as uuidv4 } from "uuid"
 
@@ -17,25 +18,25 @@ export function getUserById(id) {
     const user = users.find(u => u.id === id);
 
     if (!user) {
-        throw new Error({ error: "User not found", status: 404 })
+        throw new UserError("User not found", 404)
     }
 
     return user;
 }
 
 export function createUser(name, email, role) {
-    if (!name) throw new Error({ error: 'Name is required', status: 400 });
-    if (!email) throw new Error({ error: "Email is required", status: 400 });
+    if (!name) throw new UserError('Name is required', 400);
+    if (!email) throw new UserError("Email is required", 400);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        throw new Error({ error: 'Invalid email format', status: 400 });
+        throw new UserError('Invalid email format', 400);
     }
 
     const users = getUsers();
 
     if (users.find(u => u.email === email)) {
-        throw new Error({ error: 'Email already exists', status: 400 });
+        throw new UserError('Email already exists', 400);
     }
 
     const newUser = {
@@ -52,13 +53,13 @@ export function createUser(name, email, role) {
 }
 
 export function updateUserName(id, newName) {
-    if (!newName) throw new Error({ error: 'Name is required', status: 400 });
+    if (!newName) throw new UserError('Name is required', 400);
 
     const users = getUsers();
     const user = users.find(u => u.id === id);
 
     if (!user) {
-        throw new Error({ error: 'User not found', status: 404 });
+        throw new UserError('User not found', 404);
     }
 
     user.name = newName;
@@ -74,7 +75,7 @@ export function deleteUser(id) {
     console.log(userExists)
 
     if (!userExists) {
-        throw new Error({ error: 'User not found', status: 400 });
+        throw new UserError('User not found', 400);
     }
 
     const updatedUsers = users.filter(u => u.id !== id);
