@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment</title>
+</head>
+
+<body>
+    <div id="message">Hello World</div>
+    <button id="changeBtn" onclick="changeText();">Change Text</button>
+    <hr>
+
+    <ul id="list">
+        <li>Item 1</li>
+    </ul>
+    <button id="addItem" onclick="addItem();">Add Item</button>
+    <hr>
+
+    <p id="removeMe">Remove this text</p>
+    <button id="removeBtn" style="display: block;" onclick="removeFromDOM();">Remove</button>
+    <hr>
+
+    <input type="text" id="inputBox" onkeyup="inputChange();" />
+    <p id="output"></p>
+    <hr>
+
+    <p id="counter"></p>
+    <button id="counterBtn" onclick="startCounter();">Start Counter</button>
+</body>
+
+<script>
+    function changeText() {
+        console.log("Called")
+        let text = prompt("Enter Text")
+        document.getElementById("message").innerText = text
+    }
+
+    function addItem() {
+        const list = document.getElementById("list")
+        const li = document.createElement("li")
+        let item = prompt("Enter Your Item")
+        li.innerText = item
+        list.appendChild(li)
+    }
+
+    function removeFromDOM() {
+        document.getElementById("removeMe").remove()
+    }
+
+    function inputChange() {
+        const input = document.getElementById("inputBox")
+        const output = document.getElementById("output")
+
+        output.innerText = input.value
+    }
+
+    function startCounter() {
+        const counter = document.getElementById("counter")
+        const counterBtn = document.getElementById("counterBtn")
+
+        let time = Number(prompt("Enter counter time"))
+
+        const interval = setInterval(() => {
+            counter.innerText = String(time)
+            time--
+
+            if (time < 0)
+                clearInterval(interval)
+        }, 1000)
+    }
+
+</script>
+
+</html>
