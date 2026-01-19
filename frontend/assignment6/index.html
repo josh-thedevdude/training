@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <title>Notebook</title>
+</head>
+
+<body class="min-h-screen bg-gray-50 px-4 pt-6">
+  <div id="header" class="sticky top-0 w-full z-50 bg-white shadow-md p-4 flex justify-between items-center">
+    <p id="message" class="text-xl font-bold"></p>
+    <button id="createBtn"
+      class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out active:scale-95 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+          clip-rule="evenodd" />
+      </svg>
+    </button>
+    <button id="backBtn"
+      class="flex py-2 px-2 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-700 transition active:scale-95 hover:bg-gray-100"
+      aria-label="Go back">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+        stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+  </div>
+  <div id="root" class="flex flex-col gap-3 my-8">
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
