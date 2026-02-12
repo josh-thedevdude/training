@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Google OAuth</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding-top: 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .profile-picture {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 4px solid #667eea;
+      margin-right: 20px;
+    }
+
+    .profile-info h1 {
+      color: #333;
+      margin-bottom: 5px;
+      font-size: 28px;
+    }
+
+    .profile-info p {
+      color: #666;
+      font-size: 16px;
+    }
+
+    .user-details {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+
+    .detail-row {
+      display: flex;
+      padding: 12px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: #555;
+      width: 150px;
+    }
+
+    .detail-value {
+      color: #333;
+      flex: 1;
+    }
+
+    .logout-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+
+    .logout-btn:active {
+      transform: translateY(0);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: white;
+      font-size: 18px;
+    }
+
+    .error {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      color: #856404;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .success-badge {
+      display: inline-block;
+      background: #28a745;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .info-box {
+      background: #e7f3ff;
+      border-left: 4px solid #2196F3;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+
+    .info-box h3 {
+      color: #1976d2;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .info-box p {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div id="loading" class="loading">
+      Loading your profile...
+    </div>
+
+    <div id="error" class="error" style="display: none;"></div>
+
+    <div id="dashboard" style="display: none;">
+      <div class="card">
+        <div class="profile-header">
+          <img id="userPicture" class="profile-picture" src="" alt="Profile Picture">
+          <div class="profile-info">
+            <h1 id="userName"></h1>
+            <p id="userEmail"></p>
+          </div>
+        </div>
+
+        <div class="user-details">
+          <div class="detail-row">
+            <div class="detail-label">User ID:</div>
+            <div class="detail-value" id="userId"></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Email:</div>
+            <div class="detail-value" id="detailEmail"></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Name:</div>
+            <div class="detail-value" id="detailName"></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Status:</div>
+            <div class="detail-value">
+              <span class="success-badge">✓ Authenticated</span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Created At:</div>
+            <div class="detail-value" id="createdAt"></div>
+          </div>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">Sign Out</button>
+
+        <div class="info-box">
+          <h3>🔒 Security Information</h3>
+          <p>
+            Your session is secured with HTTP-only cookies and CSRF protection.
+            All authentication was handled server-side, and your Google credentials
+            were never exposed to the browser.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Fetch the currently authenticated user from the backend
+     * The backend validates the session cookie and returns user data
+     */
+    async function fetchUser() {
+      try {
+        const response = await fetch('/api/user', {
+          credentials: 'include' // Include cookies in request
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            // Not authenticated - redirect to login
+            window.location.href = '/';
+            return;
+          }
+          throw new Error('Failed to fetch user');
+        }
+
+        const user = await response.json();
+        displayUser(user);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        showError('Failed to load user data. Please try logging in again.');
+      }
+    }
+
+    /**
+     * Display user information on the dashboard
+     */
+    function displayUser(user) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+
+      // Set user data
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('userEmail').textContent = user.email;
+      document.getElementById('userPicture').src = user.picture || 'https://via.placeholder.com/100';
+      document.getElementById('userId').textContent = user.id;
+      document.getElementById('detailEmail').textContent = user.email;
+      document.getElementById('detailName').textContent = user.name;
+
+      // Format creation date
+      const createdDate = new Date(user.created_at);
+      document.getElementById('createdAt').textContent = createdDate.toLocaleString();
+    }
+
+    /**
+     * Show error message
+     */
+    function showError(message) {
+      document.getElementById('loading').style.display = 'none';
+      const errorEl = document.getElementById('error');
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+    }
+
+    /**
+     * Logout user by calling the backend logout endpoint
+     * This destroys the server-side session
+     */
+    async function logout() {
+      try {
+        const response = await fetch('/api/logout', {
+          method: 'POST',
+          credentials: 'include' // Include cookies in request
+        });
+
+        if (response.ok) {
+          // Redirect to login page
+          window.location.href = '/';
+        } else {
+          throw new Error('Logout failed');
+        }
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert('Failed to logout. Please try again.');
+      }
+    }
+
+    // Load user data when page loads
+    window.addEventListener('DOMContentLoaded', fetchUser);
+  </script>
+</body>
+
+</html>
